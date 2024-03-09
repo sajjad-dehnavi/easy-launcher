@@ -1,4 +1,4 @@
-package dehnavi.sajjad.easylauncher.core.repository
+package dehnavi.sajjad.easylauncher.core.data.repository
 
 import dehnavi.sajjad.easylauncher.core.datastore.AppLocalDataPreferences
 import dehnavi.sajjad.easylauncher.core.utils.dispacher.AppDispatchers

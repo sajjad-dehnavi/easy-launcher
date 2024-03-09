@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.jetbrainsKotlinAndroid)
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
+    alias(libs.plugins.room)
     alias(libs.plugins.jetbrainsKotlinSerialization)
 }
 
@@ -22,6 +23,9 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary = true
+        }
+        room {
+            schemaDirectory("$projectDir/schemas")
         }
     }
 
@@ -82,8 +86,12 @@ dependencies {
     implementation(libs.androidx.dataStore.core)
     //Serialization
     implementation(libs.kotlinx.serialization)
-    //lifecycle
+    //Lifecycle
     implementation(libs.androidx.lifecycle.runtimeCompose)
     implementation(libs.androidx.lifecycle.viewModelCompose)
+    //Room
+    implementation(libs.room.ktx)
+    implementation(libs.room.runtime)
+    ksp(libs.room.compiler)
 
 }

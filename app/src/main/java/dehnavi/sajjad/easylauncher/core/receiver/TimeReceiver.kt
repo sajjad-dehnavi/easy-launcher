@@ -3,7 +3,7 @@ package dehnavi.sajjad.easylauncher.core.receiver
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import dehnavi.sajjad.easylauncher.core.repository.LocalRepository
+import dehnavi.sajjad.easylauncher.core.data.repository.LocalRepository
 import dehnavi.sajjad.easylauncher.core.utils.dispacher.di.ApplicationScope
 import dehnavi.sajjad.easylauncher.domain.receiver.use_case.UpdateDateTimeUseCase
 import kotlinx.coroutines.CoroutineScope

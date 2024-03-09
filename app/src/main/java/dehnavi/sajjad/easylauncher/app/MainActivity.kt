@@ -2,9 +2,11 @@ package dehnavi.sajjad.easylauncher.app
 
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.pm.ResolveInfo
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,6 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
+import dehnavi.sajjad.easylauncher.core.model.AppPackage
 import dehnavi.sajjad.easylauncher.core.receiver.BatteryReceiver
 import dehnavi.sajjad.easylauncher.core.receiver.TimeReceiver
 import dehnavi.sajjad.easylauncher.ui.theme.EasyLauncherTheme
@@ -28,8 +31,13 @@ class MainActivity : ComponentActivity() {
     @Inject
     lateinit var timeReceiver: TimeReceiver
 
+    private val viewModel: MainViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        getAllAppsFromPackageManager()
+
         setContent {
             val navController = rememberNavController()
             EasyLauncherTheme {
@@ -50,6 +58,22 @@ class MainActivity : ComponentActivity() {
                     }
                 }
             }
+        }
+    }
+
+    private fun getAllAppsFromPackageManager() {
+        val mainIntent = Intent(Intent.ACTION_MAIN, null)
+        mainIntent.addCategory(Intent.CATEGORY_LAUNCHER)
+        val pkgAppsList: List<ResolveInfo> =
+            packageManager.queryIntentActivities(mainIntent, 0)
+        pkgAppsList.map {
+            val packageInfo = packageManager.getPackageInfo(it.activityInfo.packageName, 0)
+            AppPackage(
+                name = packageInfo.applicationInfo.loadLabel(packageManager).toString(),
+                packageName = it.activityInfo.packageName
+            )
+        }.also { appList ->
+            viewModel.upsertAppPackageList(appList)
         }
     }
 

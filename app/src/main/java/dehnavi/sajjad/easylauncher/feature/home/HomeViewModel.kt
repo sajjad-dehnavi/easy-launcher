@@ -3,7 +3,7 @@ package dehnavi.sajjad.easylauncher.feature.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dehnavi.sajjad.easylauncher.core.repository.LocalRepository
+import dehnavi.sajjad.easylauncher.core.data.repository.LocalRepository
 import dehnavi.sajjad.easylauncher.domain.home.use_case.GetAppLocalDataUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow

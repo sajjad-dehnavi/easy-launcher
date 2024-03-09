@@ -2,12 +2,10 @@ package dehnavi.sajjad.easylauncher.app
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import dehnavi.sajjad.easylauncher.feature.home.HOME_ROUTE
-import dehnavi.sajjad.easylauncher.feature.home.homeScreen
+import dehnavi.sajjad.easylauncher.feature.root.ROOT_ROUTE
+import dehnavi.sajjad.easylauncher.feature.root.rootScreen
 
 @Composable
 fun AppNavHost(
@@ -15,10 +13,10 @@ fun AppNavHost(
     navController: NavHostController,
 ) {
     NavHost(
-        modifier=modifier,
+        modifier = modifier,
         navController = navController,
-        startDestination = HOME_ROUTE
+        startDestination = ROOT_ROUTE,
     ) {
-        homeScreen()
+        rootScreen()
     }
 }

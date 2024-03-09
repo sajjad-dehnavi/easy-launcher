@@ -1,6 +1,6 @@
 package dehnavi.sajjad.easylauncher.domain.receiver.use_case
 
-import dehnavi.sajjad.easylauncher.core.repository.LocalRepository
+import dehnavi.sajjad.easylauncher.core.data.repository.LocalRepository
 import javax.inject.Inject
 
 class UpdateDateTimeUseCase @Inject constructor(
