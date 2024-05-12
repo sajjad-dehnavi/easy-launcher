@@ -50,7 +50,7 @@ fun BatteryAndTimeComponent(
         Text(
             text = appLocalData.concatDate(),
             color = MaterialTheme.colorScheme.onBackground,
-            style = MaterialTheme.typography.bodyLarge.copy(textAlign = TextAlign.Center),
+            style = MaterialTheme.typography.bodySmall.copy(textAlign = TextAlign.Center),
         )
     }
 }
