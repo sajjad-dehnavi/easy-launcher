@@ -6,4 +6,6 @@ import dehnavi.sajjad.easylauncher.core.model.AppPackage
 
 data class AllAppsUIState(
     val allAppsList: SnapshotStateList<AppPackage> = mutableStateListOf(),
+    val isShowOptionsAppDialog: Boolean = false,
+    val selectedAppPackage: AppPackage? = null,
 )

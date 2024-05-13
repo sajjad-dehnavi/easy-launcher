@@ -1,8 +1,9 @@
 package dehnavi.sajjad.easylauncher.feature.all_apps
 
 import android.content.Context
-import android.content.Intent
 import androidx.compose.animation.Crossfade
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -19,13 +20,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import androidx.core.content.ContextCompat.startActivity
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import dehnavi.sajjad.easylauncher.core.model.AppPackage
 import dehnavi.sajjad.easylauncher.core.utils.extension.launcherAppFromPackageName
+import dehnavi.sajjad.easylauncher.core.utils.extension.startApplicationDetailsActivity
+import dehnavi.sajjad.easylauncher.core.utils.extension.uninstallApp
+import dehnavi.sajjad.easylauncher.feature.all_apps.component.dialog.AppOptionsDialog
 
 
 @Composable
@@ -34,12 +37,52 @@ fun AllAppsRoute(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    AllAppsScreen(uiState = uiState)
+    AllAppsScreen(
+        uiState = uiState,
+        showOptionsAppDialog = viewModel::showOptionsAppDialog,
+        hideOptionsAppDialog = viewModel::hideOptionsAppDialog,
+        setSelectAppPackage = viewModel::setSelectedAppPackage,
+        addAppToFavorite = viewModel::addToFavoriteAppPackage,
+        removeAppFromFavorite = viewModel::removeFromFavoriteAppPackage,
+    )
 }
 
 @Composable
-private fun AllAppsScreen(uiState: AllAppsUIState) {
+private fun AllAppsScreen(
+    uiState: AllAppsUIState,
+    showOptionsAppDialog: () -> Unit,
+    hideOptionsAppDialog: () -> Unit,
+    setSelectAppPackage: (AppPackage) -> Unit,
+    addAppToFavorite: (AppPackage) -> Unit,
+    removeAppFromFavorite: (AppPackage) -> Unit,
+) {
     val context = LocalContext.current
+
+    if (uiState.isShowOptionsAppDialog) {
+        uiState.selectedAppPackage?.let {
+            AppOptionsDialog(
+                appPackage = it,
+                onFavoriteClick = {
+                    if (it.isFavorite.not()) {
+                        addAppToFavorite(it)
+                    } else {
+                        removeAppFromFavorite(it)
+                    }
+                    hideOptionsAppDialog()
+                },
+                onAppInfoClick = {
+                    context.startApplicationDetailsActivity(it.packageName)
+                    hideOptionsAppDialog()
+                },
+                onUninstallClick = {
+                    context.uninstallApp(it.packageName)
+                    hideOptionsAppDialog()
+                },
+                onDismiss = hideOptionsAppDialog,
+            )
+        }
+    }
+
     Column {
         Crossfade(targetState = uiState.allAppsList.isEmpty(), label = "all_app_list") {
             when (it) {
@@ -52,7 +95,9 @@ private fun AllAppsScreen(uiState: AllAppsUIState) {
                 false -> {
                     AllAppsListComponent(
                         uiState = uiState,
-                        context = context
+                        context = context,
+                        showOptionsAppDialog = showOptionsAppDialog,
+                        setSelectAppPackage = setSelectAppPackage,
                     )
                 }
             }
@@ -60,25 +105,34 @@ private fun AllAppsScreen(uiState: AllAppsUIState) {
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun AllAppsListComponent(
     uiState: AllAppsUIState,
-    context: Context
+    context: Context,
+    showOptionsAppDialog: () -> Unit,
+    setSelectAppPackage: (AppPackage) -> Unit,
 ) {
     LazyColumn {
         items(uiState.allAppsList) {
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 8.dp),
+                    .padding(horizontal = 8.dp)
+                    .combinedClickable(
+                        onClick = {
+                            context.packageManager.launcherAppFromPackageName(
+                                context = context,
+                                packageName = it.packageName
+                            )
+                        },
+                        onLongClick = {
+                            setSelectAppPackage(it)
+                            showOptionsAppDialog()
+                        }
+                    ),
                 colors = CardDefaults.cardColors()
                     .copy(containerColor = MaterialTheme.colorScheme.background),
-                onClick = {
-                    context.packageManager.launcherAppFromPackageName(
-                        context = context,
-                        packageName = it.packageName
-                    )
-                }
             ) {
                 Text(
                     modifier = Modifier.padding(

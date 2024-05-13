@@ -18,6 +18,8 @@ import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
 import dehnavi.sajjad.easylauncher.core.model.AppPackage
 import dehnavi.sajjad.easylauncher.core.receiver.BatteryReceiver
+import dehnavi.sajjad.easylauncher.core.receiver.PackageAddedReceiver
+import dehnavi.sajjad.easylauncher.core.receiver.PackageDeleteReceiver
 import dehnavi.sajjad.easylauncher.core.receiver.TimeReceiver
 import dehnavi.sajjad.easylauncher.ui.theme.EasyLauncherTheme
 import javax.inject.Inject
@@ -30,6 +32,12 @@ class MainActivity : ComponentActivity() {
 
     @Inject
     lateinit var timeReceiver: TimeReceiver
+
+    @Inject
+    lateinit var packageDeleteReceiver: PackageDeleteReceiver
+
+    @Inject
+    lateinit var packageAddedReceiver: PackageAddedReceiver
 
     private val viewModel: MainViewModel by viewModels()
 
@@ -88,11 +96,27 @@ class MainActivity : ComponentActivity() {
             addAction(Intent.ACTION_TIMEZONE_CHANGED)
         }
         registerReceiver(timeReceiver, timeIntentFilter)
+
+        val packageDeleteIntentFilter = IntentFilter().apply {
+            addAction(Intent.ACTION_PACKAGE_REMOVED)
+            addDataScheme("package")
+        }
+        registerReceiver(packageDeleteReceiver, packageDeleteIntentFilter)
+
+        val packageAddedIntentFilter = IntentFilter().apply {
+            addAction(Intent.ACTION_PACKAGE_ADDED)
+            addAction(Intent.ACTION_PACKAGE_REPLACED)
+            addAction(Intent.ACTION_PACKAGE_INSTALL)
+            addDataScheme("package")
+        }
+        registerReceiver(packageAddedReceiver, packageAddedIntentFilter)
     }
 
     override fun onDestroy() {
         super.onDestroy()
         unregisterReceiver(batteryReceiver)
         unregisterReceiver(timeReceiver)
+        unregisterReceiver(packageDeleteReceiver)
+        unregisterReceiver(packageAddedReceiver)
     }
 }

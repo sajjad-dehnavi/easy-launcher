@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Easy Launcher</string>
+    <string name="ok">OK</string>
+    <string name="add_to_favorite">Add to Favorite</string>
+    <string name="remove_from_favorite">Remove from Favorite</string>
+    <string name="app_info">App Info</string>
+    <string name="uninstall">Uninstall</string>
 </resources>

@@ -15,15 +15,23 @@ class DatabaseRepository @Inject constructor(
     private val appPackageDao: AppPackageDao,
     @Dispatcher(AppDispatchers.IO) private val ioDispatcher: CoroutineDispatcher,
 ) {
-    suspend fun upsertAppPackageList(list: List<AppPackage>) = withContext(ioDispatcher) {
-        appPackageDao.updatePackageEntities(list.map { it.toEntity() })
+    suspend fun insertAppPackageList(list: List<AppPackage>) = withContext(ioDispatcher) {
+        appPackageDao.insertPackageEntities(list.map { it.toEntity() })
     }
 
-    suspend fun insertAppPackage(appPackage: AppPackage) = withContext(ioDispatcher){
-        appPackageDao.insertPackageEntity(appPackage.toEntity())
+    suspend fun updateAppPackage(appPackage: AppPackage) = withContext(ioDispatcher) {
+        appPackageDao.updatePackageEntity(appPackage.toEntity())
     }
 
-    suspend fun getAllPackage() = withContext(ioDispatcher){
-        appPackageDao.getAllPackageEntities().map { list->list.map { it.toModel() } }
+    suspend fun getAllPackage() = withContext(ioDispatcher) {
+        appPackageDao.getAllPackageEntities().map { list -> list.map { it.toModel() } }
+    }
+
+    suspend fun getAllFavoritePackage() = withContext(ioDispatcher) {
+        appPackageDao.getAllPackageFavouritesEntities().map { list -> list.map { it.toModel() } }
+    }
+
+    suspend fun deleteAppPackage(packageName: String) = withContext(ioDispatcher) {
+        appPackageDao.deletePackageEntity(packageName)
     }
 }
