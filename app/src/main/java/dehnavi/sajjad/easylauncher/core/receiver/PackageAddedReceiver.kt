@@ -17,6 +17,7 @@ class PackageAddedReceiver @Inject constructor(
     override fun onReceive(context: Context?, intent: Intent?) {
         intent?.let {
             when (intent.action) {
+                Intent.ACTION_PACKAGE_REPLACED,
                 Intent.ACTION_PACKAGE_ADDED,
                 Intent.ACTION_PACKAGE_INSTALL -> {
                     val packageName = intent.data?.encodedSchemeSpecificPart
